@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="calModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="calEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="AppUsers" EntityType="calModel.AppUser" />
+    <EntitySet Name="Events" EntityType="calModel.Event" />
+    <EntitySet Name="EventSlots" EntityType="calModel.EventSlot" />
+    <EntitySet Name="EventTypes" EntityType="calModel.EventType" />
+    <EntitySet Name="Groups" EntityType="calModel.Group" />
+    <EntitySet Name="Orgs" EntityType="calModel.Org" />
+    <EntitySet Name="OrgUsers" EntityType="calModel.OrgUser" />
+    <EntitySet Name="Tokens" EntityType="calModel.Token" />
+    <EntitySet Name="UserEvents" EntityType="calModel.UserEvent" />
+    <EntitySet Name="WaitLists" EntityType="calModel.WaitList" />
+    <AssociationSet Name="FK_OrgUser_AppUser" Association="calModel.FK_OrgUser_AppUser">
+      <End Role="AppUser" EntitySet="AppUsers" />
+      <End Role="OrgUser" EntitySet="OrgUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Token_AppUser" Association="calModel.FK_Token_AppUser">
+      <End Role="AppUser" EntitySet="AppUsers" />
+      <End Role="Token" EntitySet="Tokens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserEvent_AppUser" Association="calModel.FK_UserEvent_AppUser">
+      <End Role="AppUser" EntitySet="AppUsers" />
+      <End Role="UserEvent" EntitySet="UserEvents" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Event_EventType" Association="calModel.FK_Event_EventType">
+      <End Role="EventType" EntitySet="EventTypes" />
+      <End Role="Event" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Event_Group" Association="calModel.FK_Event_Group">
+      <End Role="Group" EntitySet="Groups" />
+      <End Role="Event" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EventSlot_Event" Association="calModel.FK_EventSlot_Event">
+      <End Role="Event" EntitySet="Events" />
+      <End Role="EventSlot" EntitySet="EventSlots" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WaitList_Event" Association="calModel.FK_WaitList_Event">
+      <End Role="Event" EntitySet="Events" />
+      <End Role="WaitList" EntitySet="WaitLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Group_Org" Association="calModel.FK_Group_Org">
+      <End Role="Org" EntitySet="Orgs" />
+      <End Role="Group" EntitySet="Groups" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrgUser_Group" Association="calModel.FK_OrgUser_Group">
+      <End Role="Group" EntitySet="Groups" />
+      <End Role="OrgUser" EntitySet="OrgUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrgUser_Org" Association="calModel.FK_OrgUser_Org">
+      <End Role="Org" EntitySet="Orgs" />
+      <End Role="OrgUser" EntitySet="OrgUsers" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="AppUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OTP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsOrgAdmin" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="OrgUsers" Relationship="calModel.FK_OrgUser_AppUser" FromRole="AppUser" ToRole="OrgUser" />
+    <NavigationProperty Name="Tokens" Relationship="calModel.FK_Token_AppUser" FromRole="AppUser" ToRole="Token" />
+    <NavigationProperty Name="UserEvents" Relationship="calModel.FK_UserEvent_AppUser" FromRole="AppUser" ToRole="UserEvent" />
+  </EntityType>
+  <EntityType Name="Event">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="EventTypeId" Type="Guid" Nullable="false" />
+    <Property Name="GroupId" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Links" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="StartTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="EndTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="EventType" Relationship="calModel.FK_Event_EventType" FromRole="Event" ToRole="EventType" />
+    <NavigationProperty Name="Group" Relationship="calModel.FK_Event_Group" FromRole="Event" ToRole="Group" />
+    <NavigationProperty Name="EventSlots" Relationship="calModel.FK_EventSlot_Event" FromRole="Event" ToRole="EventSlot" />
+    <NavigationProperty Name="WaitLists" Relationship="calModel.FK_WaitList_Event" FromRole="Event" ToRole="WaitList" />
+  </EntityType>
+  <EntityType Name="EventSlot">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="EventId" Type="Guid" Nullable="false" />
+    <Property Name="StartTime" Type="DateTime" Precision="3" />
+    <Property Name="EndTime" Type="DateTime" Precision="3" />
+    <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="BookedBy" Type="Guid" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Event" Relationship="calModel.FK_EventSlot_Event" FromRole="EventSlot" ToRole="Event" />
+  </EntityType>
+  <EntityType Name="EventType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Events" Relationship="calModel.FK_Event_EventType" FromRole="EventType" ToRole="Event" />
+  </EntityType>
+  <EntityType Name="Group">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="OrgId" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <NavigationProperty Name="Events" Relationship="calModel.FK_Event_Group" FromRole="Group" ToRole="Event" />
+    <NavigationProperty Name="Org" Relationship="calModel.FK_Group_Org" FromRole="Group" ToRole="Org" />
+    <NavigationProperty Name="OrgUsers" Relationship="calModel.FK_OrgUser_Group" FromRole="Group" ToRole="OrgUser" />
+  </EntityType>
+  <EntityType Name="Org">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="domain" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Groups" Relationship="calModel.FK_Group_Org" FromRole="Org" ToRole="Group" />
+    <NavigationProperty Name="OrgUsers" Relationship="calModel.FK_OrgUser_Org" FromRole="Org" ToRole="OrgUser" />
+  </EntityType>
+  <EntityType Name="OrgUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="OrgId" Type="Guid" Nullable="false" />
+    <Property Name="GroupId" Type="Guid" Nullable="false" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="AppUser" Relationship="calModel.FK_OrgUser_AppUser" FromRole="OrgUser" ToRole="AppUser" />
+    <NavigationProperty Name="Group" Relationship="calModel.FK_OrgUser_Group" FromRole="OrgUser" ToRole="Group" />
+    <NavigationProperty Name="Org" Relationship="calModel.FK_OrgUser_Org" FromRole="OrgUser" ToRole="Org" />
+  </EntityType>
+  <EntityType Name="Token">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="AppUser" Relationship="calModel.FK_Token_AppUser" FromRole="Token" ToRole="AppUser" />
+  </EntityType>
+  <EntityType Name="UserEvent">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="EventId" Type="Guid" Nullable="false" />
+    <Property Name="Hide" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="AppUser" Relationship="calModel.FK_UserEvent_AppUser" FromRole="UserEvent" ToRole="AppUser" />
+  </EntityType>
+  <EntityType Name="WaitList">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="EventId" Type="Guid" Nullable="false" />
+    <Property Name="UserId" Type="Guid" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Event" Relationship="calModel.FK_WaitList_Event" FromRole="WaitList" ToRole="Event" />
+  </EntityType>
+  <Association Name="FK_OrgUser_AppUser">
+    <End Type="calModel.AppUser" Role="AppUser" Multiplicity="1" />
+    <End Type="calModel.OrgUser" Role="OrgUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AppUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrgUser">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Token_AppUser">
+    <End Type="calModel.AppUser" Role="AppUser" Multiplicity="1" />
+    <End Type="calModel.Token" Role="Token" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AppUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Token">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserEvent_AppUser">
+    <End Type="calModel.AppUser" Role="AppUser" Multiplicity="1" />
+    <End Type="calModel.UserEvent" Role="UserEvent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AppUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserEvent">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Event_EventType">
+    <End Type="calModel.EventType" Role="EventType" Multiplicity="1" />
+    <End Type="calModel.Event" Role="Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EventType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="EventTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Event_Group">
+    <End Type="calModel.Group" Role="Group" Multiplicity="1" />
+    <End Type="calModel.Event" Role="Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Group">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EventSlot_Event">
+    <End Type="calModel.Event" Role="Event" Multiplicity="1" />
+    <End Type="calModel.EventSlot" Role="EventSlot" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="EventSlot">
+        <PropertyRef Name="EventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WaitList_Event">
+    <End Type="calModel.Event" Role="Event" Multiplicity="1" />
+    <End Type="calModel.WaitList" Role="WaitList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WaitList">
+        <PropertyRef Name="EventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Group_Org">
+    <End Type="calModel.Org" Role="Org" Multiplicity="1" />
+    <End Type="calModel.Group" Role="Group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Org">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Group">
+        <PropertyRef Name="OrgId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrgUser_Group">
+    <End Type="calModel.Group" Role="Group" Multiplicity="1" />
+    <End Type="calModel.OrgUser" Role="OrgUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Group">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrgUser">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrgUser_Org">
+    <End Type="calModel.Org" Role="Org" Multiplicity="1" />
+    <End Type="calModel.OrgUser" Role="OrgUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Org">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrgUser">
+        <PropertyRef Name="OrgId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
